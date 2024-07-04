@@ -143,10 +143,16 @@
     <Compile Include="Model\AspNetUserLogin.cs">
       <DependentUpon>ModelAPI.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\AspNetUserRole.cs">
+      <DependentUpon>ModelAPI.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\AspNetUserToken.cs">
       <DependentUpon>ModelAPI.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\fnGetMenuList_Result.cs">
+    <Compile Include="Model\C__EFMigrationsHistory.cs">
+      <DependentUpon>ModelAPI.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fnGetMenuForRole_Result.cs">
       <DependentUpon>ModelAPI.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\fnGetUserMenuList_Result.cs">
@@ -204,6 +210,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

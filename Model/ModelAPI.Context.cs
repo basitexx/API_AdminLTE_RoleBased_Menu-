@@ -27,24 +27,36 @@ namespace ProjectAPI.Model
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<C__EFMigrationsHistory> C__EFMigrationsHistory { get; set; }
         public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+        public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
         public virtual DbSet<Menu_Role> Menu_Role { get; set; }
         public virtual DbSet<MenuMaster> MenuMasters { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     
-        [DbFunction("RoleAdminEntities", "fnGetMenuList")]
-        public virtual IQueryable<fnGetMenuList_Result> fnGetMenuList(string userId)
+        [DbFunction("RoleAdminEntities", "fnGetMenuForRole")]
+        public virtual IQueryable<fnGetMenuForRole_Result> fnGetMenuForRole(Nullable<int> role)
+        {
+            var roleParameter = role.HasValue ?
+                new ObjectParameter("Role", role) :
+                new ObjectParameter("Role", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fnGetMenuForRole_Result>("[RoleAdminEntities].[fnGetMenuForRole](@Role)", roleParameter);
+        }
+    
+        [DbFunction("RoleAdminEntities", "fnGetUserMenuList")]
+        public virtual IQueryable<fnGetUserMenuList_Result> fnGetUserMenuList(string userId)
         {
             var userIdParameter = userId != null ?
                 new ObjectParameter("UserId", userId) :
                 new ObjectParameter("UserId", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fnGetMenuList_Result>("[RoleAdminEntities].[fnGetMenuList](@UserId)", userIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fnGetUserMenuList_Result>("[RoleAdminEntities].[fnGetUserMenuList](@UserId)", userIdParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
@@ -150,14 +162,17 @@ namespace ProjectAPI.Model
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
     
-        [DbFunction("RoleAdminEntities", "fnGetUserMenuList")]
-        public virtual IQueryable<fnGetUserMenuList_Result> fnGetUserMenuList(string userId)
+        public virtual int spGetOtherMenuList(string userId, Nullable<int> roleId)
         {
             var userIdParameter = userId != null ?
                 new ObjectParameter("UserId", userId) :
                 new ObjectParameter("UserId", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fnGetUserMenuList_Result>("[RoleAdminEntities].[fnGetUserMenuList](@UserId)", userIdParameter);
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("RoleId", roleId) :
+                new ObjectParameter("RoleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("spGetOtherMenuList", userIdParameter, roleIdParameter);
         }
     }
 }

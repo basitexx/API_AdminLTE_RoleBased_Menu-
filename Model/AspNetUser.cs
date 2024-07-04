@@ -21,7 +21,6 @@ namespace ProjectAPI.Model
             this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
             this.AspNetUserTokens = new HashSet<AspNetUserToken>();
             this.Menu_Role = new HashSet<Menu_Role>();
-            this.AspNetRoles = new HashSet<AspNetRole>();
         }
     
         public string Id { get; set; }
@@ -40,6 +39,8 @@ namespace ProjectAPI.Model
         public bool TwoFactorEnabled { get; set; }
         public string UserName { get; set; }
         public Nullable<System.DateTime> LockoutEndDateUtc { get; set; }
+        public Nullable<System.DateTime> LastLogIn { get; set; }
+        public Nullable<bool> isEnabled { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
@@ -49,7 +50,5 @@ namespace ProjectAPI.Model
         public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Menu_Role> Menu_Role { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
     }
 }

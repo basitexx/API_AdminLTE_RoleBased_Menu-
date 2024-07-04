@@ -21,6 +21,5 @@ namespace ProjectAPI.Model
     
         public virtual AspNetRole AspNetRole { get; set; }
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual MenuMaster MenuMaster { get; set; }
     }
 }

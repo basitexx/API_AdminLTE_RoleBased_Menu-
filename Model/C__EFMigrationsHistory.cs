@@ -10,15 +10,11 @@
 namespace ProjectAPI.Model
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class fnGetUserMenuList_Result
+    public partial class C__EFMigrationsHistory
     {
-        public Nullable<int> ID { get; set; }
-        public Nullable<int> ParentID { get; set; }
-        public string Title { get; set; }
-        public string URL { get; set; }
-        public Nullable<int> isActive { get; set; }
-        public string ClassCss { get; set; }
-        public string FileName { get; set; }
+        public string MigrationId { get; set; }
+        public string ProductVersion { get; set; }
     }
 }

@@ -4,7 +4,14 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="RoleAdminModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="RoleAdminModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="__EFMigrationsHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+          </Key>
+          <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
         <EntityType Name="AspNetRoleClaims">
           <Key>
             <PropertyRef Name="Id" />
@@ -70,6 +77,8 @@
           <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" />
           <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LastLogIn" Type="datetime" />
+          <Property Name="isEnabled" Type="bit" />
         </EntityType>
         <EntityType Name="AspNetUserTokens">
           <Key>
@@ -97,11 +106,13 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ParentID" Type="int" />
-          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
           <Property Name="URL" Type="nvarchar(max)" />
           <Property Name="isActive" Type="int" Nullable="false" />
-          <Property Name="Style" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="FileName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClassCss" Type="nvarchar" MaxLength="100" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="250" />
+          <Property Name="isVisible" Type="bit" />
+          <Property Name="Type" Type="int" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -155,34 +166,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_AspNetUserRoles_AspNetRoles_RoleId">
-          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetRoles">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserRoles">
-              <PropertyRef Name="RoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AspNetUserRoles_AspNetUsers_UserId">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserRoles">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_AspNetUserTokens_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -221,31 +204,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Menu_Role_MenuMaster">
-          <End Role="MenuMaster" Type="Self.MenuMaster" Multiplicity="0..1" />
-          <End Role="Menu_Role" Type="Self.Menu_Role" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MenuMaster">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Menu_Role">
-              <PropertyRef Name="MenuId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
-        <Function Name="fnGetMenuList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="UserId" Type="nvarchar" Mode="In" />
+        <Function Name="fnGetMenuForRole" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Role" Type="int" Mode="In" />
           <ReturnType>
             <CollectionType>
               <RowType>
                 <Property Name="ID" Type="int" Nullable="false" />
                 <Property Name="ParentID" Type="int" />
-                <Property Name="Name" Type="varchar" MaxLength="100" />
+                <Property Name="Title" Type="varchar" MaxLength="100" />
                 <Property Name="URL" Type="nvarchar(max)" />
                 <Property Name="isActive" Type="int" Nullable="false" />
-                <Property Name="Style" Type="nvarchar(max)" Nullable="false" />
-                <Property Name="FileName" Type="nvarchar" MaxLength="50" />
+                <Property Name="ClassCss" Type="nvarchar" MaxLength="100" />
+                <Property Name="FileName" Type="nvarchar" MaxLength="250" />
               </RowType>
             </CollectionType>
           </ReturnType>
@@ -257,10 +228,10 @@
               <RowType>
                 <Property Name="ID" Type="int" />
                 <Property Name="ParentID" Type="int" />
-                <Property Name="Name" Type="varchar" MaxLength="100" />
+                <Property Name="Title" Type="varchar" MaxLength="100" />
                 <Property Name="URL" Type="nvarchar(max)" />
                 <Property Name="isActive" Type="int" />
-                <Property Name="Style" Type="nvarchar(max)" />
+                <Property Name="ClassCss" Type="nvarchar(max)" />
                 <Property Name="FileName" Type="nvarchar" MaxLength="50" />
               </RowType>
             </CollectionType>
@@ -296,7 +267,12 @@
           <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spGetOtherMenuList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserId" Type="nvarchar" Mode="In" />
+          <Parameter Name="RoleId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="RoleAdminModelStoreContainer">
+          <EntitySet Name="__EFMigrationsHistory" EntityType="Self.__EFMigrationsHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoleClaims" EntityType="Self.AspNetRoleClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -319,14 +295,6 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
           </AssociationSet>
-          <AssociationSet Name="FK_AspNetUserRoles_AspNetRoles_RoleId" Association="Self.FK_AspNetUserRoles_AspNetRoles_RoleId">
-            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AspNetUserRoles_AspNetUsers_UserId" Association="Self.FK_AspNetUserRoles_AspNetUsers_UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
-          </AssociationSet>
           <AssociationSet Name="FK_AspNetUserTokens_AspNetUsers_UserId" Association="Self.FK_AspNetUserTokens_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserTokens" EntitySet="AspNetUserTokens" />
@@ -339,24 +307,37 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Menu_Role" EntitySet="Menu_Role" />
           </AssociationSet>
-          <AssociationSet Name="FK_Menu_Role_MenuMaster" Association="Self.FK_Menu_Role_MenuMaster">
-            <End Role="MenuMaster" EntitySet="MenuMaster" />
-            <End Role="Menu_Role" EntitySet="Menu_Role" />
-          </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RoleAdminModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <ComplexType Name="fnGetMenuList_Result">
+        <ComplexType Name="fnGetMenuForRole_Result">
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="ParentID" Type="Int32" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="isActive" Type="Int32" Nullable="false" />
-          <Property Name="Style" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClassCss" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="fnGetUserMenuList_Result">
+          <Property Name="ID" Type="Int32" />
+          <Property Name="ParentID" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="isActive" Type="Int32" />
+          <Property Name="ClassCss" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FileName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </ComplexType>
+        <EntityType Name="C__EFMigrationsHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+          </Key>
+          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
         <EntityType Name="AspNetRoleClaim">
           <Key>
             <PropertyRef Name="Id" />
@@ -377,7 +358,6 @@
           <Property Name="NormalizedName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetRoleClaims" Relationship="Self.FK_AspNetRoleClaims_AspNetRoles_RoleId" FromRole="AspNetRoles" ToRole="AspNetRoleClaims" />
           <NavigationProperty Name="Menu_Role" Relationship="Self.FK_Menu_Role_AspNetRoles" FromRole="AspNetRoles" ToRole="Menu_Role" />
-          <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="AspNetUserClaim">
           <Key>
@@ -400,6 +380,14 @@
           <Property Name="UserId" Type="String" MaxLength="450" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_AspNetUserLogins_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
         </EntityType>
+        <EntityType Name="AspNetUserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="450" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RoleId" Type="String" MaxLength="450" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
         <EntityType Name="AspNetUser">
           <Key>
             <PropertyRef Name="Id" />
@@ -420,11 +408,12 @@
           <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LastLogIn" Type="DateTime" Precision="3" />
+          <Property Name="isEnabled" Type="Boolean" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_AspNetUserClaims_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_AspNetUserLogins_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
           <NavigationProperty Name="AspNetUserTokens" Relationship="Self.FK_AspNetUserTokens_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserTokens" />
           <NavigationProperty Name="Menu_Role" Relationship="Self.FK_Menu_Role_AspNetUsers" FromRole="AspNetUsers" ToRole="Menu_Role" />
-          <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
         </EntityType>
         <EntityType Name="AspNetUserToken">
           <Key>
@@ -448,7 +437,6 @@
           <Property Name="RoleId" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetRole" Relationship="Self.FK_Menu_Role_AspNetRoles" FromRole="Menu_Role" ToRole="AspNetRoles" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Menu_Role_AspNetUsers" FromRole="Menu_Role" ToRole="AspNetUsers" />
-          <NavigationProperty Name="MenuMaster" Relationship="Self.FK_Menu_Role_MenuMaster" FromRole="Menu_Role" ToRole="MenuMaster" />
         </EntityType>
         <EntityType Name="MenuMaster">
           <Key>
@@ -456,12 +444,13 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ParentID" Type="Int32" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="isActive" Type="Int32" Nullable="false" />
-          <Property Name="Style" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FileName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Menu_Role" Relationship="Self.FK_Menu_Role_MenuMaster" FromRole="MenuMaster" ToRole="Menu_Role" />
+          <Property Name="ClassCss" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="isVisible" Type="Boolean" />
+          <Property Name="Type" Type="Int32" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -553,27 +542,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Menu_Role_MenuMaster">
-          <End Role="MenuMaster" Type="Self.MenuMaster" Multiplicity="0..1" />
-          <End Role="Menu_Role" Type="Self.Menu_Role" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MenuMaster">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Menu_Role">
-              <PropertyRef Name="MenuId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="AspNetUserRoles">
-          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
-        </Association>
         <EntityContainer Name="RoleAdminEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__EFMigrationsHistory" EntityType="Self.C__EFMigrationsHistory" />
           <EntitySet Name="AspNetRoleClaims" EntityType="Self.AspNetRoleClaim" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRole" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
           <EntitySet Name="AspNetUserTokens" EntityType="Self.AspNetUserToken" />
           <EntitySet Name="Menu_Role" EntityType="Self.Menu_Role" />
@@ -603,16 +578,11 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Menu_Role" EntitySet="Menu_Role" />
           </AssociationSet>
-          <AssociationSet Name="FK_Menu_Role_MenuMaster" Association="Self.FK_Menu_Role_MenuMaster">
-            <End Role="MenuMaster" EntitySet="MenuMasters" />
-            <End Role="Menu_Role" EntitySet="Menu_Role" />
-          </AssociationSet>
-          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
-            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-          </AssociationSet>
-          <FunctionImport Name="fnGetMenuList" IsComposable="true" ReturnType="Collection(RoleAdminModel.fnGetMenuList_Result)">
-          <Parameter Name="UserId" Mode="In" Type="String" />
+          <FunctionImport Name="fnGetMenuForRole" IsComposable="true" ReturnType="Collection(RoleAdminModel.fnGetMenuForRole_Result)">
+            <Parameter Name="Role" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="fnGetUserMenuList" IsComposable="true" ReturnType="Collection(RoleAdminModel.fnGetUserMenuList_Result)">
+            <Parameter Name="UserId" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -644,8 +614,9 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
-          <FunctionImport Name="fnGetUserMenuList" IsComposable="true" ReturnType="Collection(RoleAdminModel.fnGetUserMenuList_Result)">
+          <FunctionImport Name="spGetOtherMenuList">
             <Parameter Name="UserId" Mode="In" Type="String" />
+            <Parameter Name="RoleId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -659,21 +630,20 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <ComplexType Name="fnGetUserMenuList_Result">
-          <Property Type="Int32" Name="ID" Nullable="true" />
-          <Property Type="Int32" Name="ParentID" Nullable="true" />
-          <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="URL" Nullable="true" />
-          <Property Type="Int32" Name="isActive" Nullable="true" />
-          <Property Type="String" Name="Style" Nullable="true" />
-          <Property Type="String" Name="FileName" Nullable="true" MaxLength="50" />
-        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="RoleAdminModelStoreContainer" CdmEntityContainer="RoleAdminEntities">
+          <EntitySetMapping Name="C__EFMigrationsHistory">
+            <EntityTypeMapping TypeName="RoleAdminModel.C__EFMigrationsHistory">
+              <MappingFragment StoreEntitySet="__EFMigrationsHistory">
+                <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AspNetRoleClaims">
             <EntityTypeMapping TypeName="RoleAdminModel.AspNetRoleClaim">
               <MappingFragment StoreEntitySet="AspNetRoleClaims">
@@ -714,6 +684,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserRoles">
+            <EntityTypeMapping TypeName="RoleAdminModel.AspNetUserRole">
+              <MappingFragment StoreEntitySet="AspNetUserRoles">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AspNetUsers">
             <EntityTypeMapping TypeName="RoleAdminModel.AspNetUser">
               <MappingFragment StoreEntitySet="AspNetUsers">
@@ -733,6 +712,8 @@
                 <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LastLogIn" ColumnName="LastLogIn" />
+                <ScalarProperty Name="isEnabled" ColumnName="isEnabled" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -761,11 +742,13 @@
               <MappingFragment StoreEntitySet="MenuMaster">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
-                <ScalarProperty Name="Style" ColumnName="Style" />
+                <ScalarProperty Name="ClassCss" ColumnName="ClassCss" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="isVisible" ColumnName="isVisible" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -780,23 +763,28 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="AspNetUserRoles" TypeName="RoleAdminModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
-            <EndProperty Name="AspNetRoles">
-              <ScalarProperty Name="Id" ColumnName="RoleId" />
-            </EndProperty>
-            <EndProperty Name="AspNetUsers">
-              <ScalarProperty Name="Id" ColumnName="UserId" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <FunctionImportMapping FunctionName="RoleAdminModel.Store.fnGetMenuList" FunctionImportName="fnGetMenuList">
+          <FunctionImportMapping FunctionName="RoleAdminModel.Store.fnGetMenuForRole" FunctionImportName="fnGetMenuForRole">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="RoleAdminModel.fnGetMenuList_Result">
+              <ComplexTypeMapping TypeName="RoleAdminModel.fnGetMenuForRole_Result">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="URL" ColumnName="URL" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
-                <ScalarProperty Name="Style" ColumnName="Style" />
+                <ScalarProperty Name="ClassCss" ColumnName="ClassCss" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="RoleAdminModel.Store.fnGetUserMenuList" FunctionImportName="fnGetUserMenuList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RoleAdminModel.fnGetUserMenuList_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="ClassCss" ColumnName="ClassCss" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
               </ComplexTypeMapping>
             </ResultMapping>
@@ -825,19 +813,7 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="RoleAdminModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="RoleAdminModel.Store.sp_upgraddiagrams" />
-          <FunctionImportMapping FunctionImportName="fnGetUserMenuList" FunctionName="RoleAdminModel.Store.fnGetUserMenuList">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="RoleAdminModel.fnGetUserMenuList_Result">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="URL" ColumnName="URL" />
-                <ScalarProperty Name="isActive" ColumnName="isActive" />
-                <ScalarProperty Name="Style" ColumnName="Style" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spGetOtherMenuList" FunctionName="RoleAdminModel.Store.spGetOtherMenuList" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

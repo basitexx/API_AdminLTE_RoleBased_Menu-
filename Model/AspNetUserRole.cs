@@ -10,15 +10,12 @@
 namespace ProjectAPI.Model
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class fnGetUserMenuList_Result
+    public partial class AspNetUserRole
     {
-        public Nullable<int> ID { get; set; }
-        public Nullable<int> ParentID { get; set; }
-        public string Title { get; set; }
-        public string URL { get; set; }
-        public Nullable<int> isActive { get; set; }
-        public string ClassCss { get; set; }
-        public string FileName { get; set; }
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
+        public int ID { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace ProjectAPI.Controller
             /* we will create menumaster model property to pass all the information we need */
 
             public string parent;
-            public string pStyle;
+            public string ClassCss;
             public string fileName;
             public string url;
 
@@ -30,7 +30,7 @@ namespace ProjectAPI.Controller
             public menu(string p, string pS, string Url, string file, List<string> c, List<string> s, List<string> u, List<string> f)
             {
                 parent = p;
-                pStyle = pS;
+                ClassCss = pS;
                 fileName = file;
                 url = Url;
                 
@@ -90,7 +90,7 @@ namespace ProjectAPI.Controller
 
             List<menu> menuResult = new List<menu>();
 
-            string parent = "", pStyle = "", url="", fileName =""; 
+            string parent = "", ClassCss = "", url="", fileName =""; 
 
             RoleAdminEntities context = new RoleAdminEntities();
             //fnGetMenuList_Result menuItem = new fnGetMenuList_Result();
@@ -106,8 +106,8 @@ namespace ProjectAPI.Controller
                 
                 if (MenuItem.ParentID == null) // means root
                 {
-                    parent = MenuItem.Name;
-                    pStyle = MenuItem.Style;
+                    parent = MenuItem.Title;
+                    ClassCss = MenuItem.ClassCss;
                     url = MenuItem.URL;
                     fileName = MenuItem.FileName;
 
@@ -116,14 +116,14 @@ namespace ProjectAPI.Controller
 
                     foreach (fnGetUserMenuList_Result MenuChild in cildList)
                     {
-                        child.Add(MenuChild.Name); // and the rest, link, style etc i.e. what's necessary for frontEnd
-                        style.Add(MenuChild.Style);
+                        child.Add(MenuChild.Title); // and the rest, link, style etc i.e. what's necessary for frontEnd
+                        style.Add(MenuChild.ClassCss);
                         cUrl.Add(MenuChild.URL);
                         cFileName.Add(MenuChild.FileName); 
                     }
 
                     // add to the menuList to be sent       
-                    menuResult.Add(new menu(parent, pStyle,url, fileName, child, style, cUrl, cFileName));
+                    menuResult.Add(new menu(parent, ClassCss,url, fileName, child, style, cUrl, cFileName));
                 }                                        
             }
 
@@ -132,41 +132,41 @@ namespace ProjectAPI.Controller
                 List<string> ch = new List<string>();
                 List<string> st = new List<string>();
 
-                string parent = uInfo, pStyle = "blue";
+                string parent = uInfo, ClassCss = "blue";
                 ch.Add("Register");
                 ch.Add("Refer");
 
                 st.Add("red");
                 st.Add("green");
 
-                list.Add(new T1(parent, pStyle, ch, st));
+                list.Add(new T1(parent, ClassCss, ch, st));
 
-                parent = "Doctor"; pStyle = "blue";
+                parent = "Doctor"; ClassCss = "blue";
                 ch.Clear(); st.Clear();
                 ch.Add("Treat");
                 ch.Add("Order");
 
                 st.Add("red");
                 st.Add("green");
-                list.Add(new T1(parent, pStyle, ch, st));
+                list.Add(new T1(parent, ClassCss, ch, st));
                 //////////////
-                parent = "Lab"; pStyle = "blue";
+                parent = "Lab"; ClassCss = "blue";
                 ch.Clear(); st.Clear();
                 ch.Add("Send Result");
                 ch.Add("Sample Register");
 
                 st.Add("red");
                 st.Add("green");
-                list.Add(new T1(parent, pStyle, ch, st));
+                list.Add(new T1(parent, ClassCss, ch, st));
                 ///////////
-                parent = "Ultrasound"; pStyle = "blue";
+                parent = "Ultrasound"; ClassCss = "blue";
                 ch.Clear(); st.Clear();
                 ch.Add("Register order");
                 ch.Add("Send result");
 
                 st.Add("red");
                 st.Add("green");
-                list.Add(new T1(parent, pStyle, ch, st));
+                list.Add(new T1(parent, ClassCss, ch, st));
                 //list.Add(new T1("Patient", "Register", "Refer")); // fill T1 object with row data
                 */
             return menuResult;

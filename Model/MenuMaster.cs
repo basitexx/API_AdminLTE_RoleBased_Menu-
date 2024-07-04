@@ -14,21 +14,14 @@ namespace ProjectAPI.Model
     
     public partial class MenuMaster
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public MenuMaster()
-        {
-            this.Menu_Role = new HashSet<Menu_Role>();
-        }
-    
         public int ID { get; set; }
         public Nullable<int> ParentID { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string URL { get; set; }
         public int isActive { get; set; }
-        public string Style { get; set; }
+        public string ClassCss { get; set; }
         public string FileName { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Menu_Role> Menu_Role { get; set; }
+        public Nullable<bool> isVisible { get; set; }
+        public Nullable<int> Type { get; set; }
     }
 }

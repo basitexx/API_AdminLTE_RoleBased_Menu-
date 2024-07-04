@@ -11,13 +11,13 @@ namespace ProjectAPI.Model
 {
     using System;
     
-    public partial class fnGetUserMenuList_Result
+    public partial class fnGetMenuForRole_Result
     {
-        public Nullable<int> ID { get; set; }
+        public int ID { get; set; }
         public Nullable<int> ParentID { get; set; }
         public string Title { get; set; }
         public string URL { get; set; }
-        public Nullable<int> isActive { get; set; }
+        public int isActive { get; set; }
         public string ClassCss { get; set; }
         public string FileName { get; set; }
     }
