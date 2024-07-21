@@ -12,17 +12,15 @@ namespace ProjectAPI.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class MenuMaster
+    public partial class tbl_PatientHistoryOrders
     {
         public int ID { get; set; }
-        public Nullable<int> ParentID { get; set; }
-        public string Title { get; set; }
-        public string URL { get; set; }
-        public int isActive { get; set; }
-        public string ClassCss { get; set; }
-        public string FileName { get; set; }
-        public Nullable<bool> isVisible { get; set; }
-        public Nullable<int> Type { get; set; }
-        public Nullable<int> MenuType { get; set; }
+        public Nullable<int> PatientHistoryID { get; set; }
+        public Nullable<int> LaboratoryOrderID { get; set; }
+        public Nullable<int> ImagingOrderID { get; set; }
+        public Nullable<int> InjectionOrderID { get; set; }
+        public Nullable<int> PrescriptionOrderID { get; set; }
+    
+        public virtual tbl_PatientHistory tbl_PatientHistory { get; set; }
     }
 }

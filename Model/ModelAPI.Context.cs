@@ -50,13 +50,17 @@ namespace ProjectAPI.Model
         }
     
         [DbFunction("RoleAdminEntities", "fnGetUserMenuList")]
-        public virtual IQueryable<fnGetUserMenuList_Result> fnGetUserMenuList(string userId)
+        public virtual IQueryable<fnGetUserMenuList_Result> fnGetUserMenuList(string userId, string menuType)
         {
             var userIdParameter = userId != null ?
                 new ObjectParameter("UserId", userId) :
                 new ObjectParameter("UserId", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fnGetUserMenuList_Result>("[RoleAdminEntities].[fnGetUserMenuList](@UserId)", userIdParameter);
+            var menuTypeParameter = menuType != null ?
+                new ObjectParameter("MenuType", menuType) :
+                new ObjectParameter("MenuType", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fnGetUserMenuList_Result>("[RoleAdminEntities].[fnGetUserMenuList](@UserId, @MenuType)", userIdParameter, menuTypeParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)

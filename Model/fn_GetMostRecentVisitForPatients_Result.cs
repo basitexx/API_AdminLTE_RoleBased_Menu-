@@ -10,19 +10,13 @@
 namespace ProjectAPI.Model
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class MenuMaster
+    public partial class fn_GetMostRecentVisitForPatients_Result
     {
         public int ID { get; set; }
-        public Nullable<int> ParentID { get; set; }
-        public string Title { get; set; }
-        public string URL { get; set; }
-        public int isActive { get; set; }
-        public string ClassCss { get; set; }
-        public string FileName { get; set; }
-        public Nullable<bool> isVisible { get; set; }
-        public Nullable<int> Type { get; set; }
-        public Nullable<int> MenuType { get; set; }
+        public Nullable<System.DateTime> LastUpdate { get; set; }
+        public Nullable<System.DateTime> VisitDate { get; set; }
+        public Nullable<int> PatientID { get; set; }
+        public string FullName { get; set; }
     }
 }

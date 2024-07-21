@@ -109,6 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Model\ModelAPI.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -120,11 +121,31 @@
       <DependentUpon>ModelAPI.edmx</DependentUpon>
       <LastGenOutput>ModelAPI.cs</LastGenOutput>
     </Content>
+    <Content Include="Model\ModelHawi.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelHawi.edmx</DependentUpon>
+      <LastGenOutput>ModelHawi.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Model\ModelHawi.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelHawi.edmx</DependentUpon>
+      <LastGenOutput>ModelHawi.cs</LastGenOutput>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ProjectAPIConfig.cs" />
     <Compile Include="Controller\menuListController.cs" />
+    <Compile Include="Controller\prescriptionController.cs" />
+    <Compile Include="Controller\VisitsController.cs" />
+    <Compile Include="Controller\VitalsController.cs" />
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -155,8 +176,35 @@
     <Compile Include="Model\fnGetMenuForRole_Result.cs">
       <DependentUpon>ModelAPI.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\fnGetOPDListWithCount_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fnGetPatientAdmittedListForOPD_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fnGetPatientAdmittedList_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fnGetPatientNotAdmittedList_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fnGetPatientVitalList_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fnGetPatientVitalsList_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\fnGetUserMenuList_Result.cs">
       <DependentUpon>ModelAPI.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fn_GetLabOrderList_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fn_GetLabresultsForVisit_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fn_GetMostRecentVisitForPatients_Result.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\MenuMaster.cs">
       <DependentUpon>ModelAPI.tt</DependentUpon>
@@ -179,14 +227,107 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelAPI.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Model\ModelHawi.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelHawi.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ModelHawi.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ModelHawi.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelHawi.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Notification.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>ModelAPI.tt</DependentUpon>
+      <DependentUpon>ModelHawi.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\sp_helpdiagrams_Result.cs">
-      <DependentUpon>ModelAPI.tt</DependentUpon>
+      <DependentUpon>ModelHawi.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\sysdiagram.cs">
-      <DependentUpon>ModelAPI.tt</DependentUpon>
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Appointment.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_City.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Department.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_ImagingOrder.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_InjectionOrder.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_LaboratoryOrder.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_LabOrderLabparam.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_labOrderparamGroup.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_LabOrderparams.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_NurseOrder.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_OrderStatus.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_OtpatientService.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Patient.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_PatientHistory.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_PatientHistoryOrders.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Patient_Vital.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Prescription.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Staff.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_SubCity.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Visit.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Visit_OtpatientService.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Vital.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Vital_Parameter.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Zone.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\viewTimeline.cs">
+      <DependentUpon>ModelHawi.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -197,6 +338,13 @@
     </EntityDeploy>
     <Content Include="Model\ModelAPI.edmx.diagram">
       <DependentUpon>ModelAPI.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Model\ModelHawi.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelHawi.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Model\ModelHawi.edmx.diagram">
+      <DependentUpon>ModelHawi.edmx</DependentUpon>
     </Content>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />

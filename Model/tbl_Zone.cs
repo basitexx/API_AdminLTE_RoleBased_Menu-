@@ -12,17 +12,18 @@ namespace ProjectAPI.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class MenuMaster
+    public partial class tbl_Zone
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_Zone()
+        {
+            this.tbl_City = new HashSet<tbl_City>();
+        }
+    
         public int ID { get; set; }
-        public Nullable<int> ParentID { get; set; }
-        public string Title { get; set; }
-        public string URL { get; set; }
-        public int isActive { get; set; }
-        public string ClassCss { get; set; }
-        public string FileName { get; set; }
-        public Nullable<bool> isVisible { get; set; }
-        public Nullable<int> Type { get; set; }
-        public Nullable<int> MenuType { get; set; }
+        public string ZoneName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_City> tbl_City { get; set; }
     }
 }

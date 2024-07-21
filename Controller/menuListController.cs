@@ -61,13 +61,17 @@ namespace ProjectAPI.Controller
         public class UserInfo
         {
             public string UserID { get; set; }
+            public string MenuType { get; set; }
         }
 
         public HttpResponseMessage Get([FromUri] UserInfo userInfo)
         {
 
             object data = null;
-            data = LoadTable1Data(userInfo.UserID);
+            if (userInfo.MenuType == null)
+                userInfo.MenuType = "1";
+
+            data = LoadTable1Data(userInfo.UserID, userInfo.MenuType);
 
             string jsonData = JsonConvert.SerializeObject(data);
             //string jsonData = GetJsonFromSomewhere();
@@ -79,7 +83,7 @@ namespace ProjectAPI.Controller
             //context.Response.Write(jsonData);
         }
 
-        public List<menu> LoadTable1Data(string uInfo)
+        public List<menu> LoadTable1Data(string uInfo, string MenuType = "")
         {      
             //get menu list for userID
 
@@ -96,7 +100,7 @@ namespace ProjectAPI.Controller
             //fnGetMenuList_Result menuItem = new fnGetMenuList_Result();
             List<fnGetUserMenuList_Result> menuList = new List<fnGetUserMenuList_Result>();
 
-            menuList = context.fnGetUserMenuList(uInfo).ToList();
+            menuList = context.fnGetUserMenuList(uInfo,MenuType).ToList();
 
             foreach (fnGetUserMenuList_Result MenuItem in menuList)
             {
